@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>ERP Tio Nan - Gestão & Lucro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #d4af37; --bg: #070707; --card: #111; --green: #28a745; --border: #333; }
+        body { background: var(--bg); color: #fff; font-family: 'Montserrat', sans-serif; margin: 0; display: none; padding: 20px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+        .tab-btn { background: #222; color: #888; border: none; padding: 12px 25px; cursor: pointer; border-radius: 8px; font-weight: bold; }
+        .tab-btn.active { background: var(--gold); color: #000; }
+        .panel { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: none; }
+        .panel.active { display: block; }
+        .fin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .fin-card { background: #1a1a1a; padding: 20px; border-radius: 12px; border: 1px solid #222; text-align: center; }
+        .fin-card h3 { font-size: 0.8rem; color: #888; margin-bottom: 10px; }
+        .fin-card p { font-size: 2rem; font-weight: bold; margin: 0; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #222; }
+        th { color: var(--gold); font-size: 0.75rem; text-transform: uppercase; }
+        .btn-sheet { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 8px 15px; border-radius: 5px; text-decoration: none; float: right; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <header style="margin-bottom: 30px;">
+        <h1 style="color:var(--gold); display: inline;">Tio Nan Business</h1>
+        <a href="https://docs.google.com/spreadsheets/d/1MjcWuXWOXJGJ-vyei-C_Zg5SPWCeUd-NFQxLib2G6ho/edit" target="_blank" class="btn-sheet">EDITAR PLANILHA</a>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'estoque')">📦 Estoque</button>
+        <button class="tab-btn" onclick="switchTab(event, 'vendas')">💰 Vendas & Lucro</button>
+    </div>
+
+    <div id="estoque" class="panel active">
+        <table><thead><tr><th>Ref</th><th>Sabor</th><th>Status Site</th></tr></thead><tbody id="corpo-estoque"></tbody></table>
+    </div>
+
+    <div id="vendas" class="panel">
+        <div class="fin-grid">
+            <div class="fin-card"><h3>Faturamento</h3><p id="fat-total">R$ 0,00</p></div>
+            <div class="fin-card"><h3>Custo</h3><p id="custo-total">R$ 0,00</p></div>
+            <div class="fin-card"><h3>Lucro</h3><p id="lucro-total" style="color:var(--green)">R$ 0,00</p></div>
+        </div>
+        <table><thead><tr><th>Data</th><th>Cliente</th><th>Total</th><th>Lucro</th><th>Status</th></tr></thead><tbody id="corpo-vendas"></tbody></table>
+    </div>
+
+    <script>
+        const SENHA_MESTRA = "tionan2020";
+        const SHEET_ID = "1MjcWuXWOXJGJ-vyei-C_Zg5SPWCeUd-NFQxLib2G6ho";
+        const GID_ESTOQUE = "0", GID_VENDAS = "1901875162";
+
+        const entrada = prompt("Senha:");
+        if(entrada === SENHA_MESTRA) { document.body.style.display = "block"; carregarTudo(); }
+        else { window.location.href = "index.html"; }
+
+        function switchTab(evt, name) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(name).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        async function carregarTudo() { fetchCSV(GID_ESTOQUE, renderEstoque); fetchCSV(GID_VENDAS, renderVendas); }
+
+        async function fetchCSV(gid, callback) {
+            const res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}&t=${new Date().getTime()}`);
+            const text = await res.text();
+            callback(text.split('\n').slice(1));
+        }
+
+        function renderEstoque(rows) {
+            document.getElementById('corpo-estoque').innerHTML = rows.map(row => {
+                const c = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                if(!c) return '';
+                return `<tr><td>${c[0]}</td><td><b>${c[1]}</b></td><td>${c[3]}</td></tr>`;
+            }).join('');
+        }
+
+        function renderVendas(rows) {
+            let fat = 0, custoTotal = 0;
+            document.getElementById('corpo-vendas').innerHTML = rows.map(row => {
+                const c = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                if(!c || c.length < 5) return '';
+                const t = parseFloat(c[3].replace(/"/g,'').replace(',','.')) || 0;
+                const cs = parseFloat(c[4].replace(/"/g,'').replace(',','.')) || 0;
+                fat += t; custoTotal += cs;
+                return `<tr><td>${c[0]}</td><td>${c[1]}</td><td>R$ ${t.toFixed(2)}</td><td>R$ ${(t-cs).toFixed(2)}</td><td>${c[5]}</td></tr>`;
+            }).join('');
+            document.getElementById('fat-total').innerText = `R$ ${fat.toFixed(2)}`;
+            document.getElementById('custo-total').innerText = `R$ ${custoTotal.toFixed(2)}`;
+            document.getElementById('lucro-total').innerText = `R$ ${(fat - custoTotal).toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
