@@ -6,192 +6,150 @@
     <title>Cachaça do Tio Nan - Loja Oficial</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --gold: #d4af37;
             --gold-metallic: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-            --bg: #070707;
-            --card-bg: #111;
+            --bg: #0a0a0a;
+            --card: #151515;
         }
 
         body { 
             background-color: var(--bg); 
             color: #fff; 
             font-family: 'Montserrat', sans-serif; 
-            margin: 0;
-            overflow-x: hidden;
+            margin: 0; padding-bottom: 50px;
         }
 
-        /* --- EFEITO METÁLICO NO TÍTULO --- */
-        .titulo-premium {
+        .header-premium {
             text-align: center;
-            font-weight: 800;
+            padding: 50px 20px;
+            background: linear-gradient(to bottom, #1a1a1a, var(--bg));
+        }
+
+        .titulo-premium {
+            font-weight: 900;
             text-transform: uppercase;
             background: var(--gold-metallic);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 2.5rem;
-            margin: 40px 0;
-            letter-spacing: 2px;
+            font-size: 2.8rem;
+            margin: 0;
+            letter-spacing: -1px;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 40px; }
-        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .grid-produtos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
 
-        /* --- CARD COM ACABAMENTO METALIZADO --- */
-        .card-produto { 
-            background: var(--card-bg); 
-            border-radius: 15px; 
-            padding: 25px; 
-            text-align: center; 
+        .card-produto {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
             border: 1px solid #222;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
+            text-align: center;
+            transition: 0.3s;
         }
 
-        .card-produto:hover {
-            border-color: var(--gold);
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
-        }
-
-        /* --- CARROSSEL E IMAGENS --- */
-        .swiper-produto { width: 100%; height: 350px; margin-bottom: 20px; border-radius: 10px; }
+        /* Swiper Fix */
+        .swiper { width: 100%; height: 320px; border-radius: 15px; margin-bottom: 20px; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: contain; }
         
-        .swiper-slide img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            transition: transform 0.5s ease;
-        }
+        .swiper-button-next, .swiper-button-prev { color: var(--gold) !important; transform: scale(0.6); }
 
-        /* Setinhas Douradas Mobile */
-        .swiper-button-next, .swiper-button-prev { 
-            color: var(--gold) !important; 
-            display: none; 
-        }
+        .prod-nome { font-size: 1.3rem; font-weight: 700; margin: 10px 0; color: #eee; }
+        .prod-preco { font-size: 1.8rem; font-weight: 900; color: var(--gold); display: block; margin-bottom: 20px; }
 
-        /* --- LOGICA PC (HOVER E METALICO) --- */
-        @media (min-width: 1024px) {
-            .card-produto:hover .foto-1 { opacity: 0; }
-            .card-produto:hover .foto-2 { opacity: 1 !important; transform: scale(1.05); }
-            
-            .foto-2 { 
-                position: absolute; 
-                top: 0; 
-                left: 0; 
-                opacity: 0; 
-                z-index: 2;
-            }
-        }
-
-        /* --- LOGICA MOBILE (SETAS) --- */
-        @media (max-width: 1023px) {
-            .swiper-button-next, .swiper-button-prev { display: flex; }
-            .foto-2 { opacity: 1 !important; position: relative !important; }
-            .titulo-premium { font-size: 1.8rem; }
-        }
-
-        .produto-nome { 
-            font-size: 1.4rem; 
-            font-weight: 700; 
-            color: #fff; 
-            margin: 10px 0; 
-            text-transform: uppercase;
-        }
-
-        .produto-preco { 
-            display: block;
-            font-size: 1.8rem; 
-            font-weight: 800; 
-            margin-bottom: 20px;
-            color: var(--gold);
-        }
-
-        .btn-comprar {
+        .btn-whats {
             background: var(--gold-metallic);
             color: #000;
             text-decoration: none;
-            padding: 15px 35px;
+            padding: 15px 30px;
             border-radius: 50px;
-            font-weight: 800;
+            font-weight: 900;
+            text-transform: uppercase;
             display: inline-block;
             transition: 0.3s;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .btn-comprar:hover {
-            transform: scale(1.05);
-            filter: brightness(1.1);
+        .btn-whats:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+        /* Esconder setas no PC para manter o visual limpo se desejar */
+        @media (min-width: 1024px) {
+            .card-produto:hover { border-color: var(--gold); }
         }
     </style>
 </head>
 <body>
 
-    <h1 class="titulo-premium">Cachaça do Tio Nan</h1>
-
-    <div class="container">
-        <div id="vitrine" class="grid-produtos">
-            </div>
+    <div class="header-premium">
+        <h1 class="titulo-premium">Cachaça do Tio Nan</h1>
+        <p style="color: #666; font-weight: 700; letter-spacing: 2px;">ARTESANAL • PREMIUM • EXCLUSIVA</p>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <div id="vitrine" class="grid-produtos">
+        </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
         const SHEET_ID = "1MjcWuXWOXJGJ-vyei-C_Zg5SPWCeUd-NFQxLib2G6ho";
-        const URL_CSV = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+        const GID = "0";
+        const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
 
-        async function carregarProdutos() {
+        async function init() {
             try {
-                const response = await fetch(URL_CSV + "&t=" + new Date().getTime());
-                const data = await response.text();
+                const res = await fetch(URL + "&cache=" + Date.now());
+                const data = await res.text();
                 const rows = data.split('\n').slice(1);
                 const vitrine = document.getElementById('vitrine');
                 vitrine.innerHTML = '';
 
-                rows.forEach(row => {
-                    const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                    if (!cols) return;
+                rows.forEach((row, index) => {
+                    const c = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                    if (!c || c[3].replace(/"/g, '').toLowerCase().trim() !== 'sim') return;
 
-                    const nome = cols[1].replace(/"/g, '');
-                    const preco = cols[2].replace(/"/g, '');
-                    const disp = cols[3].replace(/"/g, '').toLowerCase().trim();
-                    const foto1 = cols[4] ? cols[4].replace(/"/g, '').trim() : ''; 
-                    const foto2 = cols[5] ? cols[5].replace(/"/g, '').trim() : '';
+                    const nome = c[1].replace(/"/g, '');
+                    const preco = c[2].replace(/"/g, '');
+                    // Limpeza pesada nas URLs das fotos
+                    const f1 = c[4] ? c[4].replace(/"/g, '').trim() : '';
+                    const f2 = c[5] ? c[5].replace(/"/g, '').trim() : '';
 
-                    if (disp === 'sim') {
-                        vitrine.innerHTML += `
-                            <div class="card-produto">
-                                <div class="swiper swiper-produto">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide"><img src="${foto1}" class="foto-1"></div>
-                                        <div class="swiper-slide"><img src="${foto2}" class="foto-2"></div>
-                                    </div>
-                                    <div class="swiper-button-next"></div>
-                                    <div class="swiper-button-prev"></div>
+                    vitrine.innerHTML += `
+                        <div class="card-produto">
+                            <div class="swiper mySwiper-${index}">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide"><img src="${f1}"></div>
+                                    ${f2 ? `<div class="swiper-slide"><img src="${f2}"></div>` : ''}
                                 </div>
-                                <h3 class="produto-nome">${nome}</h3>
-                                <span class="produto-preco">R$ ${preco}</span>
-                                <a href="https://wa.me/5551991448888?text=Olá! Quero uma ${nome}" class="btn-comprar">Garantir a Minha</a>
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
                             </div>
-                        `;
-                    }
-                });
+                            <h2 class="prod-nome">${nome}</h2>
+                            <span class="prod-preco">R$ ${preco}</span>
+                            <a href="https://wa.me/5551991448888?text=Olá! Quero a ${nome}" class="btn-whats">Pedir Agora</a>
+                        </div>
+                    `;
 
-                // REATIVA O CARROSSEL (Swiper)
-                document.querySelectorAll('.swiper-produto').forEach(el => {
-                    new Swiper(el, {
-                        loop: true,
-                        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-                        grabCursor: true
-                    });
+                    // Inicia o Swiper para este card específico
+                    setTimeout(() => {
+                        new Swiper(`.mySwiper-${index}`, {
+                            loop: true,
+                            navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                        });
+                    }, 100);
                 });
-
-            } catch (e) { console.error("Erro:", e); }
+            } catch (err) {
+                vitrine.innerHTML = "<p>Erro ao carregar produtos. Verifique a planilha.</p>";
+            }
         }
-        carregarProdutos();
+        init();
     </script>
 </body>
 </html>
